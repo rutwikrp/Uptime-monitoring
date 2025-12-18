@@ -1,11 +1,12 @@
 const axios = require("axios");
-const pool = require("../db");
+const { getPool } = require("../db");
+
 
 const CHECK_TIMEOUT_MS = 5000;
 
 async function checkOnce() {
     try {
-        const { rows: monitors } = await pool.query(
+        const { rows: monitors } = await getPool().query(
             "SELECT id, url FROM monitors"
         );
 
@@ -35,7 +36,7 @@ async function checkOnce() {
                 }));
             }
 
-            await pool.query(
+            await getPool().query(
                 "UPDATE monitors SET status = $1, last_checked = NOW() WHERE id = $2",
                 [status, monitor.id]
             );

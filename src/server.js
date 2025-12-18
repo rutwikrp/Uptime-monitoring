@@ -1,7 +1,7 @@
 console.log("🔥🔥 RUNNING SERVER FILE:", __filename);
 require("dotenv").config();
 const app = require("./app");
-const pool = require("./db");
+const { getPool } = require("./db");
 const { checkOnce } = require("./services/checker");
 
 const PORT = process.env.PORT || 3000;
@@ -12,8 +12,26 @@ let checkerInterval;
 
 async function start() {
   try {
-    await pool.query("SELECT 1");
-    console.log("✅ DB ready at startup");
+    async function waitForDb(retries = 5, delayMs = 2000) {
+      for (let i = 1; i <= retries; i++) {
+        try {
+          await getPool().query("SELECT 1");
+          console.log("✅ DB ready at startup");
+          return;
+        } catch (err) {
+          console.error(
+            `⏳ DB not ready (attempt ${i}/${retries}): ${err.message}`
+          );
+          if (i === retries) {
+            console.error("❌ DB unreachable after retries. Waiting for restart...");
+            return;
+          }
+          await new Promise((r) => setTimeout(r, delayMs));
+        }
+      }
+    }
+    await waitForDb();
+
 
     console.log("🧠 Before listen, server =", server);
 
@@ -52,7 +70,7 @@ async function shutdown(signal) {
 
   // Close DB connections
   try {
-    await pool.end();
+    await getPool().end();
     console.log("🔌 DB pool closed");
   } catch (err) {
     console.error("❌ Error closing DB pool:", err.message);

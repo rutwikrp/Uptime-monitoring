@@ -11,7 +11,7 @@ RUN npm ci --omit=dev
 
 # Copy source
 COPY src ./src 
-COPY .env ./
+#COPY .env ./
 
 # Switch User
 USER app

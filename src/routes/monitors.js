@@ -1,5 +1,6 @@
 const express = require("express");
-const pool = require("../db");
+const { getPool } = require("../db");
+
 
 const router = express.Router();
 
@@ -8,7 +9,7 @@ const router = express.Router();
  */
 router.get("/", async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM monitors ORDER BY id");
+    const result = await getPool().query("SELECT * FROM monitors ORDER BY id");
     res.json(result.rows);
   } catch (err) {
     console.error(err);
@@ -28,7 +29,7 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    const result = await pool.query(
+    const result = await getPool().query(
       "INSERT INTO monitors (url) VALUES ($1) RETURNING *",
       [url]
     );

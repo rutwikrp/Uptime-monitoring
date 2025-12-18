@@ -1,18 +1,20 @@
 const { Pool } = require("pg");
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
 
-pool.on("connect", () => {
-  console.log("✅ Connected to PostgreSQL");
-});
 
-pool.on("error", (err) => {
-  console.error(
-    `❌ PostgreSQL pool error at ${new Date().toISOString()}:`,
-    err.message
-  );
-});
+// pool.on("connect", () => {
+//   console.log("✅ Connected to PostgreSQL");
+// });
 
-module.exports = pool;
+let pool;
+
+function getPool() {
+  if (!pool) {
+    pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+    });
+  }
+  return pool;
+}
+
+module.exports = { getPool };
