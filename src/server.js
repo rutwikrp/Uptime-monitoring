@@ -36,7 +36,7 @@ async function start() {
     console.log("🧠 Before listen, server =", server);
 
     server = app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
+      console.log(`🚀 Server v2 running on port ${PORT}`);
       //setInterval(checkOnce, CHECK_INTERVAL_MS);
     });
     console.log("🧠 After listen, server =", server);
