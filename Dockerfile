@@ -10,7 +10,7 @@ COPY package*.json ./
 RUN npm ci --omit=dev
 
 # Copy source
-COPY src ./src 
+COPY . .
 #COPY .env ./
 
 # Switch User

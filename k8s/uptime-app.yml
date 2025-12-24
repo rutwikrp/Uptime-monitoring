@@ -4,7 +4,7 @@ metadata:
   name: uptime-app
   namespace: uptime
 spec:
-  replicas: 2
+  replicas: 1
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -21,7 +21,8 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: uptime-app
-          image: uptime-monitor:1.0
+          image: uptime-monitor:alert-fix-003
+          imagePullPolicy: Never
           ports:
             - containerPort: 3000
           env:
@@ -29,6 +30,11 @@ spec:
               value: postgresql://postgres:postgres@postgres:5432/uptime_monitor
             - name: PORT
               value: "3000"
+            - name: ALERT_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: alert-secrets
+                  key: ALERT_WEBHOOK_URL
 
           # Liveness = is the process alive?
           livenessProbe:
