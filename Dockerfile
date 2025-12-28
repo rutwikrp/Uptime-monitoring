@@ -12,7 +12,8 @@ RUN npm ci --omit=dev
 # Copy source
 COPY . .
 #COPY .env ./
-
+# UI will be added later (safe if missing)
+COPY ui ./ui
 # Switch User
 USER app
 

@@ -1,0 +1,43 @@
+name: CI-CD Uptime Monitor
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/uptime-monitor:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/uptime-monitor:latest
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure kubeconfig
+        run: |
+          echo "${{ secrets.KUBECONFIG_BASE64 }}" | base64 -d > kubeconfig
+          export KUBECONFIG=$PWD/kubeconfig
+
+      - name: Deploy to Kubernetes
+        run: |
+          sed -i "s|IMAGE_TAG|${{ github.sha }}|g" k8s/uptime-app.yaml
+          sed -i "s|rutwikrp|${{ secrets.DOCKERHUB_USERNAME }}|g" k8s/uptime-app.yaml
+          kubectl apply -f k8s/
+
