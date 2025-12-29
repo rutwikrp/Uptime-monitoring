@@ -37,7 +37,7 @@ jobs:
 
       - name: Deploy to Kubernetes
         run: |
-          sed -i "s|IMAGE_TAG|${{ github.sha }}|g" k8s/uptime-app.yaml
-          sed -i "s|rutwikrp|${{ secrets.DOCKERHUB_USERNAME }}|g" k8s/uptime-app.yaml
+          sed -i "s|IMAGE_TAG|${{ github.sha }}|g" k8s/uptime-app.yml
+          sed -i "s|rutwikrp|${{ secrets.DOCKERHUB_USERNAME }}|g" k8s/uptime-app.yml
           kubectl apply -f k8s/
 
