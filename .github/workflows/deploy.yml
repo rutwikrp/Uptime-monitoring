@@ -27,17 +27,5 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/uptime-monitor:${{ github.sha }}
             ${{ secrets.DOCKERHUB_USERNAME }}/uptime-monitor:latest
 
-      - name: Setup kubectl
-        uses: azure/setup-kubectl@v4
-
-      - name: Configure kubeconfig
-        run: |
-          echo "${{ secrets.KUBECONFIG_BASE64 }}" | base64 -d > kubeconfig
-          echo "KUBECONFIG=$PWD/kubeconfig" >> $GITHUB_ENV
-
-      - name: Deploy to Kubernetes
-        run: |
-          sed -i "s|IMAGE_TAG|${{ github.sha }}|g" k8s/uptime-app.yml
-          sed -i "s|rutwikrp|${{ secrets.DOCKERHUB_USERNAME }}|g" k8s/uptime-app.yml
-          kubectl apply -f k8s/
+      
 
