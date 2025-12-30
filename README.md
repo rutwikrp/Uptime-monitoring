@@ -11,15 +11,17 @@ The application is containerized using Docker, deployed on Kubernetes, and uses 
 
 ### High-Level Architecture Diagram
 
+![Architecture](architecture.svg)
+
 ### Architecture Explanation
 
-Client requests are routed through a Kubernetes Service to a Node.js application running in a Deployment.  
-The application stores monitor state in PostgreSQL and runs a background checker that periodically verifies URL availability.
+- Client requests are routed through a Kubernetes Service to a Node.js application running in a Deployment.  
+- The application stores monitor state in PostgreSQL and runs a background checker that periodically verifies URL availability.
 
-When a monitor transitions between UP and DOWN states, webhook alerts are triggered.  
-The application supports graceful shutdown and rolling updates using Kubernetes readiness probes.
+- When a monitor transitions between UP and DOWN states, webhook alerts are triggered.  
+- The application supports graceful shutdown and rolling updates using Kubernetes readiness probes.
 
-GitHub Actions is used to build and push Docker images to Docker Hub.  
+- GitHub Actions is used to build and push Docker images to Docker Hub.  
 The Kubernetes cluster pulls the latest image during deployments.
 
 ---
