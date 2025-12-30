@@ -1,25 +1,28 @@
+
 # Uptime Monitoring System (Kubernetes + CI/CD)
+
 
 A production-style uptime monitoring system that checks website availability, stores status in PostgreSQL, and sends alerts when a site goes down or recovers.
 
 The application is containerized using Docker, deployed on Kubernetes, and uses GitHub Actions for CI to build and publish images to Docker Hub.
 
----
 
 ## Architecture Overview
 
-Client
-↓
-API (Node.js)
-↓
-PostgreSQL ←─── Background Checker
-↓
-Webhook Alerts
+### High-Level Architecture Diagram
 
-##CI (GitHub Actions) → Docker Hub → Kubernetes (Image Pull)
+### Architecture Explanation
+
+Client requests are routed through a Kubernetes Service to a Node.js application running in a Deployment.  
+The application stores monitor state in PostgreSQL and runs a background checker that periodically verifies URL availability.
+
+When a monitor transitions between UP and DOWN states, webhook alerts are triggered.  
+The application supports graceful shutdown and rolling updates using Kubernetes readiness probes.
+
+GitHub Actions is used to build and push Docker images to Docker Hub.  
+The Kubernetes cluster pulls the latest image during deployments.
 
 ---
-
 ## Key Features
 
 - Periodic uptime checks using a background checker
@@ -35,8 +38,7 @@ Webhook Alerts
 - Docker Hub as image registry
 
 ---
-
-## Tech Stack
+## Tech stack
 
 - **Backend:** Node.js
 - **Database:** PostgreSQL
@@ -46,7 +48,6 @@ Webhook Alerts
 - **Alerts:** Webhook (Webhook.site for testing)
 
 ---
-
 ## Failure Handling & Reliability
 
 - Database outages do not crash the application
@@ -56,86 +57,89 @@ Webhook Alerts
 - Old pods remain active during rollouts until new pods are ready
 
 ---
-
 ## Running Locally (Docker)
 
 ```bash
 docker build -t uptime-monitor .
 docker run -p 3000:3000 uptime-monitor
 ```
-**##Running on Kubernetes (Minikube)**
+
+## Running on Kubernetes (Minikube)
 ```bash
 kubectl apply -f k8s/
 kubectl -n uptime port-forward svc/uptime-app 8080:80
 ```
-Access the API at:
+
+## Access the API at
+```bash
 http://localhost:8080
+```
 
-**##API Endpoints**
-Add a monitor
+## API Endpoints
 
+### Add a monitor
 ```bash
 POST /monitors
+Content-Type: application/json
+
 {
   "url": "https://example.com"
 }
 ```
-List monitors
+### List monitors
 ```bash
 GET /monitors
 ```
-Health Check
+### Health check
 ```bash
 GET /health
 ```
-Readiness Check
+### Readiness check
 ```bash
 GET /ready
 ```
 
-**Alerting**
 
-Alerts are triggered only on state transitions
+## Alerting
 
-DOWN alert when a site becomes unreachable
+- Alerts are triggered only on state transitions
 
-RECOVER alert when a site comes back up
+- DOWN alert when a site becomes unreachable
 
-Alerts are sent via HTTP POST to a configured webhook URL
+- RECOVER alert when a site comes back up
 
-**CI/CD Pipeline**
+- Alerts are sent via HTTP POST to a configured webhook URL
 
-Triggered on every push to main
+## CI/CD Pipeline
 
-Builds Docker image
+- Triggered on every push to main
 
-Pushes image to Docker Hub
+- Builds Docker image
 
-Image is tagged with:
+- Pushes image to Docker Hub
 
-latest
+- Image is tagged with:
 
-commit SHA
+  - latest
 
-Kubernetes pulls the image using imagePullPolicy: Always
+  - commit SHA
 
-Deployment to Minikube is performed manually (local cluster)
+- Kubernetes pulls the image using     
+    -  imagePullPolicy: Always
 
-**Why This Project**
+- Local Minikube deployment is performed manually
 
-This project was built to gain hands-on experience with real-world backend and DevOps challenges, including container lifecycle management, Kubernetes rollouts, CI/CD pipelines, failure recovery, and alerting reliability.
+## Future Improvements
 
-**Future Improvements**
+- Add a frontend UI for managing monitors
 
-Add a frontend UI for managing monitors
+- Alert throttling and cooldowns
 
-Alert throttling and cooldowns
+- Authentication and multi-user support
 
-Authentication and multi-user support
+- Metrics and dashboards (Prometheus/Grafana)
 
-Metrics and dashboards (Prometheus/Grafana)
+- Deployment to a managed cloud Kubernetes cluster
 
-Deployment to a managed cloud Kubernetes cluster
-
-**Author**
-Built by **Rutwik Patil**
+## Author
+- Built by Rutwik Patil
