@@ -63,7 +63,7 @@ Webhook Alerts
 docker build -t uptime-monitor .
 docker run -p 3000:3000 uptime-monitor
 ```
-##Running on Kubernetes (Minikube)
+**##Running on Kubernetes (Minikube)**
 ```bash
 kubectl apply -f k8s/
 kubectl -n uptime port-forward svc/uptime-app 8080:80
@@ -71,7 +71,7 @@ kubectl -n uptime port-forward svc/uptime-app 8080:80
 Access the API at:
 http://localhost:8080
 
-##API Endpoints
+**##API Endpoints**
 Add a monitor
 
 ```bash
@@ -93,7 +93,7 @@ Readiness Check
 GET /ready
 ```
 
-##Alerting
+**Alerting**
 
 Alerts are triggered only on state transitions
 
@@ -103,7 +103,7 @@ RECOVER alert when a site comes back up
 
 Alerts are sent via HTTP POST to a configured webhook URL
 
-##CI/CD Pipeline
+**CI/CD Pipeline**
 
 Triggered on every push to main
 
@@ -121,11 +121,11 @@ Kubernetes pulls the image using imagePullPolicy: Always
 
 Deployment to Minikube is performed manually (local cluster)
 
-##Why This Project
+**Why This Project**
 
 This project was built to gain hands-on experience with real-world backend and DevOps challenges, including container lifecycle management, Kubernetes rollouts, CI/CD pipelines, failure recovery, and alerting reliability.
 
-##Future Improvements
+**Future Improvements**
 
 Add a frontend UI for managing monitors
 
@@ -137,5 +137,5 @@ Metrics and dashboards (Prometheus/Grafana)
 
 Deployment to a managed cloud Kubernetes cluster
 
-##Author
-Built by Rutwik Patil
+**Author**
+Built by **Rutwik Patil**
