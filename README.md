@@ -139,3 +139,10 @@ GET /ready
 
 ## Author
 - Built by Rutwik Patil
+## Future Improvements
+
+- Add a frontend UI for managing monitors
+
+- Alert throttling and cooldowns
+
+- Authentication and multi-user support
