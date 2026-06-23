@@ -131,13 +131,7 @@ GET /ready
 
 - Local Minikube deployment is performed manually
 
-## Future Improvements
 
-- Add a frontend UI for managing monitors
-
-- Alert throttling and cooldowns
-
-- Authentication and multi-user support
 
 - Metrics and dashboards (Prometheus/Grafana)
 
